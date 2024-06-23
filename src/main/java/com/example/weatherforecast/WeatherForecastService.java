@@ -23,8 +23,8 @@ public class WeatherForecastService {
                 "maxwind_kph",
                 "totalprecip_mm",
                 "totalsnow_cm",
-                "avghumidity",
                 "avgvis_km",
+                "avghumidity",
                 "uv");
         JsonNode arrNode = jsonNode.findValue("forecastday");
         if (!arrNode.isArray()) return null;
@@ -46,5 +46,15 @@ public class WeatherForecastService {
             arrayNode.add(forecast);
         }
         return arrayNode;
+    }
+
+    public ObjectNode fetchDataFromCities(List<String> cityNames, int days) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode objectNode = mapper.createObjectNode();
+        for (String city : cityNames) {
+            ArrayNode nodeList = fetchDataFromCity(city, days);
+            objectNode.set(city, nodeList);
+        }
+        return objectNode;
     }
 }
