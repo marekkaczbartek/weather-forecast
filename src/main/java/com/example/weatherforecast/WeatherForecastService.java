@@ -15,7 +15,6 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class WeatherForecastService {
-    private static String uri = "https://api.weatherapi.com/v1/forecast.json?key=42aba646982448d3b1672108242306";
     private List<ObjectNode> extractDailyForecast(ObjectMapper mapper, JsonNode jsonNode) throws RuntimeException {
         if (jsonNode == null) throw new IllegalArgumentException();
         List<String> features = Arrays.asList(

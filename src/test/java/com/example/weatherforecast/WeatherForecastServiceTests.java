@@ -3,6 +3,7 @@ package com.example.weatherforecast;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,10 +29,14 @@ public class WeatherForecastServiceTests {
     @Test
     public void testWeatherForecast() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = weatherForecastService.fetchDataFromCities(mapper, List.of("Warsaw"), 1);
-        JsonNode forecast = node.findValue("Warsaw").get(0);
-        JsonNode firstDayForecastData = forecast.findValue(getFieldNames(forecast).get(0));
+        JsonNode forecast = weatherForecastService.fetchDataFromCities(mapper, List.of("Warsaw"), 3);
         assertNotNull(forecast);
+
+        JsonNode warsawForecast = forecast.findValue("Warsaw");
+        assertTrue(forecast.findValue("Warsaw").isArray());
+        assertEquals(3, warsawForecast.size());
+
+        JsonNode firstDayForecastData = warsawForecast.findValue(getFieldNames(warsawForecast.get(0)).get(0));
         assertEquals(
                 Arrays.asList(
                         "maxtemp_c",
