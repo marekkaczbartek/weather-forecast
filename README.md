@@ -20,16 +20,27 @@ features (as measured daily):
 - `totalsnow_cm` - total snowfall (in centimeters),
 - `avgvis_km` - average visibility (in kilometers),
 - `avghumidity` - average humidity as a percentage,
-- `uv` - uv index
+- `uv` - uv index.
+
+### Run
+
+Before you run the app, make sure you have Java 21 and Maven 3.9 
+installed on your machine.
+
+To run the app, type in the terminal:
+
+````
+mvn spring-boot::run
+````
+
+The app runs at `http://localhost:8080`.
 
 ### Endpoints
 
-The app runs on `http://localhost:8080`
-
 1. `/forecast/params?days={days}` - returns a weather forecast 
-for a given number of days into the future
+for a given number of days into the future,
 
-2. `/forecast` - returns a weather forecast for the next 3 days
+2. `/forecast` - returns a weather forecast for the next 3 days.
 
 ### Documentation
 
