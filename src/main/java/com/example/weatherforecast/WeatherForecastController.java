@@ -17,9 +17,9 @@ public class WeatherForecastController {
     private WeatherForecastService weatherForecastService;
     @GetMapping("/forecast/params")
     public ObjectNode getForecast(
-            @RequestParam int days,
-            @RequestBody List<String> cityNamesList) throws JsonProcessingException {
-        return weatherForecastService.getForecastFromCities(cityNamesList, days);
+            @RequestParam int days) throws JsonProcessingException {
+        List<String> cityNames = Arrays.asList("Warsaw", "Cracow", "Wroclaw", "Lodz", "Poznan");
+        return weatherForecastService.getForecastFromCities(cityNames, days);
     }
 
     @GetMapping("/forecast")
