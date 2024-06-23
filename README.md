@@ -24,7 +24,7 @@ features (as measured daily):
 
 ### Run
 
-Before you run the app, make sure you have Java 21 and Maven 3.9 
+Before you run the app, make sure you have Java 21 and Maven 3
 installed on your machine.
 
 To run the app, type in the terminal:
