@@ -23,6 +23,7 @@ public class WeatherForecastServiceTests {
         node.fieldNames().forEachRemaining(keys::add);
         return keys;
     }
+
     @Test
     public void testWeatherForecast() throws JsonProcessingException {
         JsonNode node = weatherForecastService.fetchDataFromCities(List.of("Warsaw"), 1);

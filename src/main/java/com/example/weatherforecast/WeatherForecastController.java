@@ -17,8 +17,15 @@ import java.util.List;
 @RestController
 public class WeatherForecastController {
     private WeatherForecastService weatherForecastService;
+    @GetMapping("/forecast/params")
+    public ObjectNode getData(@RequestParam int days, @RequestBody List<String> cityNamesList) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return weatherForecastService.fetchDataFromCities(mapper, cityNamesList, days);
+    }
+
     @GetMapping("/forecast")
-    public Object getData(@RequestParam int days, @RequestBody List<String> cityNamesList) throws JsonProcessingException {
-        return weatherForecastService.fetchDataFromCities(cityNamesList, days);
+    public ObjectNode getData() throws JsonProcessingException {
+        List<String> cityNames = Arrays.asList("Warsaw", "Cracow", "Wroclaw", "Lodz", "Poznan");
+        return getData( 3, cityNames);
     }
 }
