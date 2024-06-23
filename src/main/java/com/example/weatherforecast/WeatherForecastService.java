@@ -15,8 +15,8 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class WeatherForecastService {
-    private List<ObjectNode> extractDailyForecast(ObjectMapper mapper, JsonNode jsonNode) throws RuntimeException {
-        if (jsonNode == null) throw new IllegalArgumentException();
+    private List<ObjectNode> extractDailyForecast(ObjectMapper mapper, JsonNode weatherData) throws RuntimeException {
+        if (weatherData == null) throw new IllegalArgumentException();
         List<String> features = Arrays.asList(
                 "maxtemp_c",
                 "mintemp_c",
@@ -27,41 +27,42 @@ public class WeatherForecastService {
                 "avgvis_km",
                 "avghumidity",
                 "uv");
-        JsonNode arrNode = jsonNode.findValue("forecastday");
-        if (!arrNode.isArray()) return null;
+        JsonNode dailyForecast = weatherData.findValue("forecastday");
+        if (!dailyForecast.isArray()) throw new RuntimeException();
         return StreamSupport
-                .stream(arrNode.spliterator(), false)
+                .stream(dailyForecast.spliterator(), false)
                 .map((node) -> {
-                    ObjectNode date = mapper.createObjectNode();
+                    ObjectNode dailyNode = mapper.createObjectNode();
                     String dateString = node.findValue("date").textValue();
                     ObjectNode data = ((ObjectNode) node.findValue("day")).retain(features);
-                    date.set(dateString, data);
-                    return date;
+                    dailyNode.set(dateString, data);
+                    return dailyNode;
                 })
                 .collect(Collectors.toList());
     }
-    private ArrayNode fetchDataFromCity(ObjectMapper mapper, String cityName, int days) throws JsonProcessingException {
+    private ArrayNode getForecastFromCity(ObjectMapper mapper, String cityName, int days) throws JsonProcessingException {
         String uri = String.format(
                 "https://api.weatherapi.com/v1/forecast.json?key=42aba646982448d3b1672108242306&q=%s&days=%s",
                 cityName, days);
         RestTemplate restTemplate = new RestTemplate();
-        String res = restTemplate.getForObject(uri, String.class);
-        JsonNode jsonNode = mapper.readTree(res);
-        ArrayNode arrayNode = mapper.createArrayNode();
-        List<ObjectNode> forecastList =  extractDailyForecast(mapper, jsonNode);
-        assert forecastList != null;
-        for (JsonNode forecast : forecastList) {
-            arrayNode.add(forecast);
+        String response = restTemplate.getForObject(uri, String.class);
+        JsonNode weatherData = mapper.readTree(response);
+        List<ObjectNode> dailyForecastList =  extractDailyForecast(mapper, weatherData);
+        ArrayNode dailyForecastListNode = mapper.createArrayNode();
+        if (dailyForecastList == null) throw new RuntimeException();
+        for (JsonNode forecast : dailyForecastList) {
+            dailyForecastListNode.add(forecast);
         }
-        return arrayNode;
+        return dailyForecastListNode;
     }
 
-    public ObjectNode fetchDataFromCities(ObjectMapper mapper, List<String> cityNames, int days) throws JsonProcessingException {
-        ObjectNode objectNode = mapper.createObjectNode();
+    public ObjectNode getForecastFromCities(List<String> cityNames, int days) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode cityForecastNode = mapper.createObjectNode();
         for (String city : cityNames) {
-            ArrayNode nodeList = fetchDataFromCity(mapper, city, days);
-            objectNode.set(city, nodeList);
+            ArrayNode forecast = getForecastFromCity(mapper, city, days);
+            cityForecastNode.set(city, forecast);
         }
-        return objectNode;
+        return cityForecastNode;
     }
 }

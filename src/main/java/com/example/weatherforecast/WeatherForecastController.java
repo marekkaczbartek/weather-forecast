@@ -1,8 +1,6 @@
 package com.example.weatherforecast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +16,15 @@ import java.util.List;
 public class WeatherForecastController {
     private WeatherForecastService weatherForecastService;
     @GetMapping("/forecast/params")
-    public ObjectNode getData(@RequestParam int days, @RequestBody List<String> cityNamesList) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return weatherForecastService.fetchDataFromCities(mapper, cityNamesList, days);
+    public ObjectNode getForecast(
+            @RequestParam int days,
+            @RequestBody List<String> cityNamesList) throws JsonProcessingException {
+        return weatherForecastService.getForecastFromCities(cityNamesList, days);
     }
 
     @GetMapping("/forecast")
-    public ObjectNode getData() throws JsonProcessingException {
+    public ObjectNode getForecast() throws JsonProcessingException {
         List<String> cityNames = Arrays.asList("Warsaw", "Cracow", "Wroclaw", "Lodz", "Poznan");
-        return getData( 3, cityNames);
+        return weatherForecastService.getForecastFromCities(cityNames, 3);
     }
 }
