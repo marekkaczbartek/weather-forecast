@@ -31,4 +31,6 @@ for a given number of days into the future
 
 2. `/forecast` - returns a weather forecast for the next 3 days
 
-3. `/swagger-ui/index.html` - OpenAPI/Swagger documentation
+### Documentation
+
+The OpenAPI/Swagger documentation is available at `/swagger-ui/index.html`.
